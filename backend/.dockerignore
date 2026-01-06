@@ -1,0 +1,10 @@
+dist/
+drizzle/
+node_modules/
+__tests__/
+*.md
+add
+commit
+package-lock.json
+*.tsbuildinfo
+*.env
