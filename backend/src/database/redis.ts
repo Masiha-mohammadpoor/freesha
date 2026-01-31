@@ -1,12 +1,22 @@
 import redis, { RedisClientType } from "redis";
 
-import { customLog } from "../helpers/utils.js";
+import { customLog, isNone } from "../helpers/utils.js";
 import { RedisValue } from "../helpers/types.js";
 
 let redisClient: RedisClientType<any, any, any, any, any>;
 
 export async function connectRedis() {
-  const redisUrl = process.env.REDIS_URL!;
+  if (isNone(process.env.REDIS_URL)) {
+    customLog("redis", "Redis URL is empty, check the .env file");
+    customLog("server", "Exiting due to no redis connection");
+    process.exit(1);
+  }
+
+  if (process.env.IS_IN_DOCKER) {
+    process.env.REDIS_URL = "redis://redis";
+  }
+
+  const redisUrl = process.env.REDIS_URL;
 
   redisClient = await redis
     .createClient({ url: redisUrl })
