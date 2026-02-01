@@ -1,0 +1,31 @@
+services:
+  backend:
+    image: iliaabbasi/freesha-backend:latest
+    ports:
+      - "${BACKEND_PORT?err}:${BACKEND_PORT?err}"
+    env_file:
+      - ./backend/.env
+    environment:
+      IS_IN_DOCKER: 1
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - drizzle_vol:/backend/drizzle
+    command: sh -c "./misc/migration.bash && npm run dev"
+  
+  postgres:
+    image: postgres:16.11-alpine
+    volumes:
+      - db_vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER?err}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?err}
+      POSTGRES_DB: ${POSTGRES_DB?err}
+  
+  redis:
+    image: redis:7-alpine
+
+volumes:
+  db_vol:
+  drizzle_vol:

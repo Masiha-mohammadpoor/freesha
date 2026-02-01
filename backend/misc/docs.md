@@ -2,10 +2,12 @@
 
 This is the documentation for the backend of freesha.
 
-## Installation
+## Getting started
+
+### Manual
 
 1. First, install these softwares:
-  - [Node.js](https://nodejs.org)
+  - [Node.js](https://nodejs.org/)
   - [NPM](https://www.npmjs.com/)
   - [PostgreSQL](https://www.postgresql.org/)
   - [Redis](https://redis.io/)
@@ -15,14 +17,14 @@ This is the documentation for the backend of freesha.
   CREATE DATABASE "freesha";
   ```
 
-3. After cloning [freesha](https://github.com/Ilia-Masiha/freesha), go inside the `backend` directory and run all the shell commands there.
+3. After cloning [freesha](https://github.com/Ilia-Masiha/freesha), go inside the `backend` directory and run all the shell commands there
 
-4. Install dependencies:
+4. Install dependencies:  
   ```sh
   npm install
   ```
 
-5. Run migration commands:
+5. Run migration commands:  
   ```sh
   npm run generate
   npm run migrate
@@ -31,16 +33,28 @@ This is the documentation for the backend of freesha.
 
 6. Create a new email address or use your own email address for OTP sending. If you want to use your own email address, read the next section: [OTP](https://github.com/ilia-abbasi/freesha/blob/main/backend/misc/docs.md#otp)
 
-7. Create the `.env` file outside the `backend` directory, in the root of this repository:
-  ```env
-  DATABASE_URL=postgresql://user:pass@localhost:5432/freesha
-  REDIS_URL=redis://127.0.0.1:6379
-  EMAIL_SERVICE=gmail
-  EMAIL_USER=john@doe.com
-  EMAIL_PASS=aaaabbbbccccdddd
-  ```
+7. Create `.env` files based on the provided `.env.example` files
 
 8. Make sure Redis is already running
+
+9. You can either use `npm run dev` to run the backend in watch mode, or build it first and then run the Javascript files instead:  
+  ```sh
+  npm run build
+  npm run start
+  ```
+
+### Docker
+
+1. Install [docker](https://www.docker.com/)
+
+2. Create a new email address or use your own email address for OTP sending. If you want to use your own email address, read the next section: [OTP](https://github.com/ilia-abbasi/freesha/blob/main/backend/misc/docs.md#otp)
+
+3. Create `.env` files based on the provided `.env.example` files
+
+4. Run this command in the root of the project (where `compose.yml` is located):  
+  ```sh
+  docker compose up
+  ```
 
 ## OTP
 
@@ -55,14 +69,6 @@ To use your own email address for sending OTPs, follow these steps (GMAIL):
   7. Put `gmail` in `EMAIL_SERVICE` environment variable.
 
 OTP is a 5-character string consisting of 0-9 and A-Z except capital i (`I`) and capital o (`O`), because they can be confused with `1` and `0`. This gives 45,435,424 distinct OTPs.
-
-## Running
-
-You can either use `npm run dev` to run the backend in watch mode, or build it first and then run the Javascript files instead:  
-  ```sh
-  npm run build
-  npm run start
-  ```
 
 ## Response format
 

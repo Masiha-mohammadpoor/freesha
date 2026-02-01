@@ -51,7 +51,13 @@ export let db: NodePgDatabase<Record<string, never>> & {
 };
 
 export function connectDb() {
-  db = drizzle(process.env.DATABASE_URL!);
+  if (isNone(process.env.DATABASE_URL)) {
+    customLog("database", "Database URL is empty, check the .env file");
+    customLog("server", "Exiting due to no database connection");
+    process.exit(1);
+  }
+
+  db = drizzle(process.env.DATABASE_URL);
 
   customLog("database", "Connected via drizzle");
 }

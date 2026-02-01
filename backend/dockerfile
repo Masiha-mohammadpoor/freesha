@@ -1,0 +1,15 @@
+FROM node:22-alpine AS builder
+
+WORKDIR /backend
+
+COPY package.json .
+
+RUN npm i \
+    && npm cache clean --force \
+    && rm -rf /root/.npm
+
+COPY . .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "dev"]

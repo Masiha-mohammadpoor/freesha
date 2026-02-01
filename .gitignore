@@ -3,6 +3,7 @@ backend/add
 backend/commit
 backend/package-lock.json
 frontend/package-lock.json
+backend/misc/build-push.bash
 
 # Drizzle
 backend/drizzle/
