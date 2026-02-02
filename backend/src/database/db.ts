@@ -36,6 +36,7 @@ import {
   socialLinksQuery,
   workExperiencesQuery,
 } from "./queries.js";
+import { fixDatabaseUrl } from "../helpers/utils_indep.js";
 
 export const defaultFields = [
   // "id" and "roleName" are hard-coded
@@ -56,6 +57,8 @@ export function connectDb() {
     customLog("server", "Exiting due to no database connection");
     process.exit(1);
   }
+
+  fixDatabaseUrl();
 
   db = drizzle(process.env.DATABASE_URL);
 
