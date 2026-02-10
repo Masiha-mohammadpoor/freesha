@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import Empty from "@/common/Empty";
+import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
 
 const schema = yup
   .object({
@@ -73,12 +74,15 @@ const schema = yup
           } catch {
             return false;
           }
-        }
+        },
       ),
   })
   .required();
 
 const SocialMedia = () => {
+  const { mutateAsync } = useUpdateUser();
+  const { completeUser, completeUserLoading } = useGetUserData("socialLinks");
+
   const {
     register,
     handleSubmit,
@@ -91,7 +95,18 @@ const SocialMedia = () => {
     mode: "onTouched",
   });
 
-  const addLinkHandler = async (data) => {};
+  const addLinkHandler = async (data) => {
+    console.log(data);
+    try {
+      const res = await mutateAsync({
+        id: completeUser.data.id,
+        data: { socialLinks: [...completeUser.data.socialLinks, data.link] },
+      });
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <section>
