@@ -4,8 +4,9 @@ import Title from "@/common/Title";
 import LanguagesSelector from "@/components/Profile/LanguagesSelector";
 import ResumeUploader from "@/components/Profile/ResumeUploader";
 import SkillsSelector from "@/components/Profile/SkillsSelector";
-import { useGetBasicUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiFilesDuotone } from "react-icons/pi";
 import * as yup from "yup";
@@ -17,11 +18,15 @@ const schema = yup.object({
 
 const Resume = () => {
   const { mutateAsync } = useUpdateUser();
-  const { basicUser, basicUserLoading } = useGetBasicUserData();
+  const { completeUser, completeUserLoading } = useGetUserData(
+    "skills,languageNames",
+  );
+  console.log(completeUser);
 
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -32,40 +37,58 @@ const Resume = () => {
     mode: "onTouched",
   });
 
+  useEffect(() => {
+    if (completeUser && !completeUserLoading) {
+      const { skills, languageNames } = completeUser.data;
+      reset({ skills, languageNames });
+    }
+  }, [reset, completeUser, completeUserLoading]);
+
   const updateHandler = async (data) => {
     try {
-      const res = await mutateAsync({ id: basicUser.data.id, data });
+      const res = await mutateAsync({ id: completeUser.data.id, data });
       console.log(res);
     } catch (err) {
       console.log(err);
     }
   };
 
-  if (basicUserLoading) return <p>loading...</p>;
-  return (
-    <section>
-      <Title
-        text="رزومه کاری"
-        icon={<PiFilesDuotone className="text-secondary text-3xl" />}
-        color="primary"
-      />
-      <article className="mt-16">
-        <form
-          onSubmit={handleSubmit(updateHandler)}
-          className="flex flex-col gap-y-10"
-        >
-          <div className="w-[50%]">
-            <SkillsSelector control={control} />
-          </div>
-          <LanguagesSelector control={control} />
-          <ResumeUploader />
-          <div>
-            <Btn text="به روزرسانی" type="submit" />
-          </div>
-        </form>
-      </article>
-    </section>
-  );
+  if (completeUserLoading) return <p>loading...</p>;
+  if (completeUser && !completeUserLoading)
+    return (
+      <section>
+        <Title
+          text="رزومه کاری"
+          icon={<PiFilesDuotone className="text-secondary text-3xl" />}
+          color="primary"
+        />
+        <article className="mt-16">
+          <form
+            onSubmit={handleSubmit(updateHandler)}
+            className="flex flex-col gap-y-10"
+          >
+            <div className="w-[50%]">
+              <SkillsSelector
+                control={control}
+                initialSkills={completeUser.data.skills}
+              />
+            </div>
+            <LanguagesSelector
+              control={control}
+              initialLanguages={completeUser.data.languageNames}
+            />
+            <ResumeUploader />
+            <div>
+              <Btn
+                text="به روزرسانی"
+                type="submit"
+                disabled={!isValid || !isDirty || isSubmitting}
+              />
+            </div>
+          </form>
+        </article>
+      </section>
+    );
 };
 
 export default Resume;
