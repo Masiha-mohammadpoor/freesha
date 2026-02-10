@@ -90,6 +90,7 @@ const SocialMedia = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -108,6 +109,25 @@ const SocialMedia = () => {
       queryClient.invalidateQueries({
         queryKey: ["complete-user", completeUser.data.id, "socialLinks"],
       });
+      reset();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteHandler = async (link) => {
+    const filteredLinks = completeUser.data.socialLinks.filter(
+      (l) => l !== link,
+    );
+    try {
+      const res = await mutateAsync({
+        id: completeUser.data.id,
+        data: { socialLinks: filteredLinks },
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["complete-user", completeUser.data.id, "socialLinks"],
+      });
+      reset();
     } catch (err) {
       console.log(err);
     }
@@ -140,15 +160,18 @@ const SocialMedia = () => {
             className="mb-3"
           />
         </form>
-        {completeUser?.data ? (
+        {completeUser?.data?.socialLinks.length > 0 ? (
           <div className="flex flex-col justify-center items-center gap-3 mt-5">
-            {completeUser.data.socialLinks.map((l, index) => {
+            {completeUser.data.socialLinks.map((l) => {
               return (
                 <div
                   key={l}
                   className="w-[70%] h-10 rounded-lg border-2 border-secondary flex justify-between items-center overflow-hidden"
                 >
-                  <button className="px-3 text-error cursor-pointer text-xl">
+                  <button
+                    onClick={() => deleteHandler(l)}
+                    className="px-3 text-error cursor-pointer text-xl"
+                  >
                     <FaTrashAlt />
                   </button>
                   <div className="flex">
