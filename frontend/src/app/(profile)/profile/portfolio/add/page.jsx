@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const defaultValues = {
   title: "",
@@ -39,8 +41,10 @@ const schema = yup.object({
 });
 
 const AddPortfolio = () => {
+  const router = useRouter();
   const { mutateAsync } = useUpdateUser();
   const { completeUser, completeUserLoading } = useGetUserData("portfolios");
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -54,13 +58,15 @@ const AddPortfolio = () => {
   });
 
   const updateHandler = async (data) => {
-    console.log(data);
     try {
       const res = await mutateAsync({
         id: completeUser.data.id,
         data: { portfolios: [...completeUser.data.portfolios, data] },
       });
-      console.log(res);
+      queryClient.invalidateQueries({
+        queryKey: ["complete-user", completeUser.data.id, "portfolios"],
+      });
+      router.push("/profile/portfolio");
     } catch (err) {
       console.log(err);
     }

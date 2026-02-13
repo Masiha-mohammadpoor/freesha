@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const genderOptions = [
   { value: "1", label: "نامشخص" },
@@ -69,7 +70,8 @@ const schema = yup.object({
 const PersonalInformation = () => {
   const { mutateAsync } = useUpdateUser();
   const { completeUser, completeUserLoading } = useGetUserData();
-  console.log(completeUser);
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -110,7 +112,8 @@ const PersonalInformation = () => {
   const updateHandler = async (data) => {
     try {
       const res = await mutateAsync({ id: completeUser.data.id, data });
-      console.log(res);
+      reset();
+      queryClient.invalidateQueries({queryKey:["complete-user", completeUser.data.id]});
     } catch (err) {
       console.log(err);
     }
@@ -227,4 +230,4 @@ const PersonalInformation = () => {
   );
 };
 
-export default PersonalInformation
+export default PersonalInformation;

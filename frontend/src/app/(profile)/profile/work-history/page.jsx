@@ -14,7 +14,7 @@ const WorkHistory = () => {
         color="primary"
       />
       <article className="mt-16">
-        <Empty text="هیچ سابقه کاری وجود ندارد" />
+        <Empty text="هیچ سابقه کاری وجود ندارد!" url="/images/empty(workHistory).svg"/>
       </article>
       <Link href="/profile/work-history/add">
         <button className="cursor-pointer absolute bottom-0 left-0  p-4 rounded-full bg-secondary text-txt-secondary text-3xl transition-all duration-300 hover:rotate-180">

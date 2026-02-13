@@ -14,7 +14,7 @@ const Educations = () => {
         color="primary"
       />
       <article className="mt-16">
-        <Empty text="هیچ مدرک تحصیلی وجود ندارد" />
+        <Empty text="هیچ مدرک تحصیلی وجود ندارد!" url="/images/empty(education).svg"/>
       </article>
       <Link href="/profile/education/add">
         <button className="cursor-pointer absolute bottom-0 left-0  p-4 rounded-full bg-secondary text-txt-secondary text-3xl transition-all duration-300 hover:rotate-180">

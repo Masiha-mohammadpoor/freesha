@@ -7,10 +7,11 @@
   --color-error: #9d0208;
   --color-warning: #faa307;
   --color-success: #38b000;
-  --color-bg-primary: #E3EDEC;
+  --color-bg-primary: #E5F0EF;
   --color-bg-secondary: #FFFEFF;
   --color-txt-primary: #1a1a1a;
   --color-txt-secondary: #FFFFFF;
+  --color-txt-tertiary: #61615E;
   --shadow-custom: 6px 6px rgba(196, 159, 50, 0.6); 
 }
 

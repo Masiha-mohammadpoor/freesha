@@ -185,7 +185,7 @@ const SocialMedia = () => {
             })}
           </div>
         ) : (
-          <Empty text="هیچ لینکی موجود نیست" url="/images/empty(link).svg" />
+          <Empty text="هیچ لینکی موجود نیست!" url="/images/empty(link).svg" />
         )}
       </article>
     </section>

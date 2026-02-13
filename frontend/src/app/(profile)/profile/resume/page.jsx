@@ -6,6 +6,7 @@ import ResumeUploader from "@/components/Profile/ResumeUploader";
 import SkillsSelector from "@/components/Profile/SkillsSelector";
 import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiFilesDuotone } from "react-icons/pi";
@@ -21,7 +22,7 @@ const Resume = () => {
   const { completeUser, completeUserLoading } = useGetUserData(
     "skills,languageNames",
   );
-  console.log(completeUser);
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit,
@@ -47,7 +48,14 @@ const Resume = () => {
   const updateHandler = async (data) => {
     try {
       const res = await mutateAsync({ id: completeUser.data.id, data });
-      console.log(res);
+      reset();
+      queryClient.invalidateQueries({
+        queryKey: [
+          "complete-user",
+          completeUser.data.id,
+          "skills,languageNames",
+        ],
+      });
     } catch (err) {
       console.log(err);
     }
