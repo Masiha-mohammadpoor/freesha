@@ -115,7 +115,7 @@ const AddPortfolio = () => {
 
           <div className="col-span-9">
             <Btn
-              text="به روزرسانی"
+              text="افزودن"
               type="submit"
               disabled={!isValid || !isDirty || isSubmitting}
             />

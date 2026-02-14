@@ -13,7 +13,6 @@ import { TbArrowBadgeLeftFilled } from "react-icons/tb";
 
 const Portfolio = () => {
   const { completeUser, completeUserLoading } = useGetUserData("portfolios");
-  console.log(completeUser);
 
   if (completeUserLoading || !completeUser) return <div>loading...</div>;
   return (
@@ -46,7 +45,6 @@ const Portfolio = () => {
                         <GoLink /> لینک پروژه
                       </p>
                     </Link>
-                    {/* <p className="mt-2 text-sm text-txt-tertiary leading-6 h-14">{p.description.slice(0,70) + "..."}</p> */}
                     <Link href="/" className="text-primary text-sm font-semibold flex items-end gap-x-1 underline">اطلاعات بیشتر <TbArrowBadgeLeftFilled/></Link>
                   </div>
                 </div>
