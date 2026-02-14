@@ -30,7 +30,7 @@ const WorkHistory = () => {
         />
         <article className="mt-16">
           {completeUser?.data?.workExperiences?.length > 0 ? (
-            <div className="grid grid-cols-12 gap-x-4 gap-y-14">
+            <div className="grid grid-cols-12 gap-4">
               {completeUser.data.workExperiences.map((w) => {
                 return (
                   <div
@@ -39,10 +39,15 @@ const WorkHistory = () => {
                   >
                     <div className="w-full p-4 flex flex-col gap-y-3">
                       <h3 className="text-lg text-txt-tertiary font-semibold">
-                        {w.jobTitle}
+                        {w.jobTitle.length > 20
+                          ? w.jobTitle.slice(0, 20) + "..."
+                          : w.jobTitle}
                       </h3>
                       <h5 className="flex items-center gap-x-1 text-secondary">
-                        <PiBuildingOfficeDuotone /> شرکت : {w.company}
+                        <PiBuildingOfficeDuotone /> شرکت :{" "}
+                        {w.company.length > 15
+                          ? w.company.slice(0, 15) + "..."
+                          : w.company}
                       </h5>
                       <p className="text-sm font-semibold text-primary flex items-end gap-x-1">
                         <PiCalendarDotsDuotone className="text-lg" /> از تاریخ{" "}

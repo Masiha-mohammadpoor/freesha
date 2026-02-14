@@ -4,12 +4,13 @@ import Title from "@/common/Title";
 import DateInput from "@/components/DateInput";
 import FormInput from "@/components/FormInput";
 import ImageUploader from "@/components/Profile/ImageUploader";
-import TextArea from "@/components/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PiNotepadDuotone } from "react-icons/pi";
 import { Controller, useForm } from "react-hook-form";
 import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 const defaultValues = {
   title: "",
@@ -34,14 +35,17 @@ const schema = yup.object({
 });
 
 const AddEducation = () => {
+  const router = useRouter();
   const { mutateAsync } = useUpdateUser();
-  const { completeUser, completeUserLoading } =
-    useGetUserData("educationDegrees");
+  const { completeUser, completeUserLoading } = useGetUserData("educationDegrees");
+  console.log(completeUser)
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm({
     defaultValues,
@@ -57,7 +61,11 @@ const AddEducation = () => {
           educationDegrees: [...completeUser.data.educationDegrees, data],
         },
       });
-      console.log(res);
+      queryClient.invalidateQueries({
+        queryKey : ["complete-user" , completeUser.data.id , "educationDegrees"]
+      });
+      reset();
+      router.push("/profile/education")
     } catch (err) {
       console.log(err);
     }
@@ -117,7 +125,7 @@ const AddEducation = () => {
             <ImageUploader />
           </div>
           <div className="col-span-9">
-            <Btn text="به روزرسانی" type="submit" />
+            <Btn text="افزودن" type="submit" />
           </div>
         </form>
       </article>
