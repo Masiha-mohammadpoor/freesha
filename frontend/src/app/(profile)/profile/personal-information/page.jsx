@@ -9,7 +9,9 @@ import Select from "@/components/Select";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useGetBasicUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const genderOptions = [
   { value: "1", label: "نامشخص" },
@@ -67,11 +69,14 @@ const schema = yup.object({
 
 const PersonalInformation = () => {
   const { mutateAsync } = useUpdateUser();
-  const { basicUser, basicUserLoading } = useGetBasicUserData();
+  const { completeUser, completeUserLoading } = useGetUserData();
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isValid, isDirty, isSubmitting },
   } = useForm({
     defaultValues,
@@ -79,16 +84,42 @@ const PersonalInformation = () => {
     mode: "onTouched",
   });
 
+  useEffect(() => {
+    if (completeUser && !completeUserLoading) {
+      const {
+        name,
+        jobTitle,
+        birthDate,
+        phoneNumber,
+        genderName,
+        postalCode,
+        homeAddress,
+        bio,
+      } = completeUser.data;
+      reset({
+        name,
+        jobTitle,
+        birthDate,
+        phoneNumber,
+        genderId: genderName === "M" ? "2" : genderName === "F" ? "3" : "1",
+        postalCode,
+        homeAddress,
+        bio,
+      });
+    }
+  }, [reset, completeUser, completeUserLoading]);
+
   const updateHandler = async (data) => {
     try {
-      const res = await mutateAsync({ id: basicUser.data.id, data });
-      console.log(res);
+      const res = await mutateAsync({ id: completeUser.data.id, data });
+      reset();
+      queryClient.invalidateQueries({queryKey:["complete-user", completeUser.data.id]});
     } catch (err) {
       console.log(err);
     }
   };
 
-  if (basicUserLoading) return <p>loading...</p>;
+  if (completeUserLoading) return <p>loading...</p>;
   return (
     <section>
       <Title
@@ -156,7 +187,7 @@ const PersonalInformation = () => {
                   onBlur={field.onBlur}
                   value={
                     genderOptions.find(
-                      (option) => option.value === field.value
+                      (option) => option.value === field.value,
                     ) || null
                   }
                 />

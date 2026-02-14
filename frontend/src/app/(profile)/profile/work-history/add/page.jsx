@@ -9,6 +9,8 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { PiClockUserDuotone } from "react-icons/pi";
 import { useGetUserData, useUpdateUser } from "@/hooks/userHooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 const defaultValues = {
   jobTitle: "",
@@ -43,9 +45,11 @@ const schema = yup.object({
 });
 
 const AddWorkHistory = () => {
+  const router = useRouter();
   const { mutateAsync } = useUpdateUser();
   const { completeUser, completeUserLoading } =
     useGetUserData("workExperiences");
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -63,7 +67,10 @@ const AddWorkHistory = () => {
         id: completeUser.data.id,
         data: { workExperiences: [...completeUser.data.workExperiences, data] },
       });
-      console.log(res);
+      queryClient.invalidateQueries({
+        queryKey: ["complete-user", completeUser.data.id, "workExperiences"],
+      });
+      router.push("/profile/work-history");
     } catch (err) {
       console.log(err);
     }
@@ -136,7 +143,7 @@ const AddWorkHistory = () => {
           />
           <div className="col-span-9">
             <Btn
-              text="به روزرسانی"
+              text="افزودن"
               type="submit"
               disabled={!isValid || !isDirty || isSubmitting}
             />
